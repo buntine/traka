@@ -13,20 +13,24 @@ module Traka
         before_create :set_uuid, :record_create
         before_update :record_update
         before_destroy :record_destroy
+
+        include Traka::IsTrakable::LocalInstanceMethods
       end
     end
 
-    def set_uuid
-      write_attribute(self.class.traka_uuid, SecureRandom.hex(20))
-    end
+    module LocalInstanceMethods
+      def set_uuid
+        write_attribute(self.class.traka_uuid, SecureRandom.hex(20))
+      end
 
-    def record_create
-    end
+      def record_create
+      end
 
-    def record_update
-    end
+      def record_update
+      end
 
-    def record_destroy
+      def record_destroy
+      end
     end
   end
 end
