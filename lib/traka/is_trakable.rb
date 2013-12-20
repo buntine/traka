@@ -24,7 +24,8 @@ module Traka
       end
 
       def record_create
-        # TODO: Create TrakaChange record here.
+        #TrakaChange.create(:klass => self.class, :uuid => self.attributes[self.class.traka_uuid],
+         #                  :action_type => "create")
       end
 
       def record_update
