@@ -24,12 +24,15 @@ module Traka
       end
 
       def record_create
+        # TODO: Create TrakaChange record here.
       end
 
       def record_update
+        # TODO: Create TrakaChange record here.
       end
 
       def record_destroy
+        # TODO: Create TrakaChange record here.
       end
     end
   end
