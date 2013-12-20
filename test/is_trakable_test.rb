@@ -26,4 +26,28 @@ class IsTrakableTest < Test::Unit::TestCase
     assert_kind_of String, c.code
   end
 
+  def test_a_product_should_record_changes_on_create
+    assert true
+  end
+
+  def test_a_product_should_record_changes_on_destroy
+    assert true
+  end
+
+  def test_a_product_should_record_changes_on_update
+    assert true
+  end
+
+  def test_a_cheese_should_record_changes_on_create
+    assert true
+  end
+
+  def test_a_cheese_should_record_changes_on_destroy
+    assert true
+  end
+
+  def test_a_cheese_should_record_changes_on_update
+    assert true
+  end
+
 end
