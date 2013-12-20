@@ -10,4 +10,20 @@ class IsTrakableTest < Test::Unit::TestCase
     assert_equal "code", Cheese.traka_uuid
   end
 
+  def test_a_products_uuid_is_set_on_save
+    p = Product.new(:name => "Product A")
+    p.save
+
+    assert_not_nil p.uuid
+    assert_kind_of String, p.uuid
+  end
+
+  def test_a_cheeses_code_is_set_on_save
+    c = Cheese.new(:name => "Cheese A")
+    c.save
+
+    assert_not_nil c.code
+    assert_kind_of String, c.code
+  end
+
 end
