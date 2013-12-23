@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131219051348) do
+ActiveRecord::Schema.define(:version => 20131223111034) do
 
   create_table "cheeses", :force => true do |t|
     t.string   "name"
@@ -25,6 +25,15 @@ ActiveRecord::Schema.define(:version => 20131219051348) do
     t.string   "uuid"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+  end
+
+  create_table "traka_changes", :force => true do |t|
+    t.string   "klass"
+    t.string   "uuid"
+    t.string   "action_type"
+    t.integer  "version"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
 end
