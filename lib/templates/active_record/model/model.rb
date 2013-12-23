@@ -3,9 +3,20 @@ class TrakaChange < ActiveRecord::Base
 
   before_save :set_version
 
-  # TODO: Implement.
   def self.latest_version
-    1
+    begin
+      File.read(
+        File.join(
+          Rails.root, "public", "system",
+          "api", "version.txt")).to_i
+    rescue
+      tc = TrakaChange.last
+      v  = tc ? tc.version + 1 : 1
+
+      logger.warn "Latest Traka version not found. Defaulting to v#{v}"
+
+      v
+    end
   end
 
   def self.staged_changes
