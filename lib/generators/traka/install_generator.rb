@@ -9,13 +9,13 @@ module Traka
         generate "model", "traka_change klass:string uuid:string action_type:string version:integer"
       end
 
-      def update_model
-        copy_file "traka_change.rb", "app/models/traka_change.rb"
-      end
+#      def update_model
+#        copy_file "traka_change.rb", "app/models/traka_change.rb"
+#      end
 
       def create_version_file
-        directory "public/system/api"
-        copy_file "version.txt", "public/system/api/version.txt"
+        directory "public/system"
+        #copy_file "version.txt", "public/system/api/version.txt"
       end
     end
   end
