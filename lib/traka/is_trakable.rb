@@ -24,16 +24,23 @@ module Traka
       end
 
       def record_create
-        #TrakaChange.create(:klass => self.class, :uuid => self.attributes[self.class.traka_uuid],
-         #                  :action_type => "create")
+        record_traka_change("create")
       end
 
       def record_update
-        # TODO: Create TrakaChange record here.
+        record_traka_change("update")
       end
 
       def record_destroy
-        # TODO: Create TrakaChange record here.
+        record_traka_change("destroy")
+      end
+
+     private
+
+      def record_traka_change(action_type)
+        TrakaChange.create(:klass => self.class,
+                           :uuid => self.attributes[self.class.traka_uuid],
+                           :action_type => action_type)
       end
     end
   end
