@@ -27,27 +27,63 @@ class IsTrakableTest < Test::Unit::TestCase
   end
 
   def test_a_product_should_record_changes_on_create
-    assert true
+    c = Product.new(:name => "Product B")
+    c.save
+    tc = TrakaChange.last
+
+    assert_equal tc.klass, "Product"
+    assert_equal tc.action_type, "create"
   end
 
   def test_a_product_should_record_changes_on_destroy
-    assert true
+    c = Product.new(:name => "Product B")
+    c.save
+    c.destroy
+    tc = TrakaChange.last
+
+    assert_equal tc.klass, "Product"
+    assert_equal tc.action_type, "destroy"
   end
 
   def test_a_product_should_record_changes_on_update
-    assert true
+    c = Product.new(:name => "Product B")
+    c.save
+    c.name = "New Name"
+    c.save
+    tc = TrakaChange.last
+
+    assert_equal tc.klass, "Product"
+    assert_equal tc.action_type, "update"
   end
 
   def test_a_cheese_should_record_changes_on_create
-    assert true
+    c = Cheese.new(:name => "Cheese B")
+    c.save
+    tc = TrakaChange.last
+
+    assert_equal tc.klass, "Cheese"
+    assert_equal tc.action_type, "create"
   end
 
   def test_a_cheese_should_record_changes_on_destroy
-    assert true
+    c = Cheese.new(:name => "Cheese B")
+    c.save
+    c.destroy
+    tc = TrakaChange.last
+
+    assert_equal tc.klass, "Cheese"
+    assert_equal tc.action_type, "destroy"
   end
 
   def test_a_cheese_should_record_changes_on_update
-    assert true
+    c = Cheese.new(:name => "Cheese B")
+    c.save
+    c.name = "New Name"
+    c.save
+    tc = TrakaChange.last
+
+    assert_equal tc.klass, "Cheese"
+    assert_equal tc.action_type, "update"
   end
 
 end

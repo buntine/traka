@@ -38,7 +38,7 @@ module Traka
      private
 
       def record_traka_change(action_type)
-        TrakaChange.create(:klass => self.class,
+        TrakaChange.create(:klass => self.class.to_s,
                            :uuid => self.attributes[self.class.traka_uuid],
                            :action_type => action_type)
       end
