@@ -19,12 +19,24 @@ class TrakaChange < ActiveRecord::Base
     end
   end
 
+  def self.publish_new_version
+    # TODO: Open file and increment version number.
+  end
+
   def self.staged_changes
     changes_for_v(self.latest_version + 1)
   end
 
   def self.changes_for_v(v)
     self.where(:version => v)
+  end
+
+  def changes_from(v)
+    changes_in_range(v)
+  end
+
+  def self.changes_in_range(from=1, to=latest_version)
+    self.where(["version >= ? AND version <= ?", from, to])
   end
 
  private

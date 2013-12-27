@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class TrakaTest < ActiveSupport::TestCase
-  test "truth" do
-    assert_kind_of Module, Traka
+  test "Traka change has latest version" do
+    assert_equal TrakaChange.latest_version, 1
   end
 end
