@@ -5,13 +5,10 @@ class TrakaChange < ActiveRecord::Base
 
   def self.latest_version
     begin
-      File.read(
-        File.join(
-          Rails.root, "public", "system",
-          "api", "version.txt")).to_i
+      File.read(version_path).to_i
     rescue
       tc = TrakaChange.last
-      v  = tc ? tc.version + 1 : 1
+      v  = tc ? tc.version : 1
 
       logger.warn "Latest Traka version not found. Defaulting to v#{v}"
 
@@ -19,8 +16,14 @@ class TrakaChange < ActiveRecord::Base
     end
   end
 
-  def self.publish_new_version
-    # TODO: Open file and increment version number.
+  def self.publish_new_version!
+    set_version!(latest_version + 1)
+  end
+
+  def self.set_version!(v)
+    File.open(version_path, "w") do |f|
+      f.write(v.to_s)
+    end
   end
 
   def self.staged_changes
@@ -43,6 +46,12 @@ class TrakaChange < ActiveRecord::Base
 
   def set_version
     self.version = TrakaChange.latest_version + 1
+  end
+
+  def self.version_path
+    File.join(
+      Rails.root, "public", "system",
+      "api", "version.txt")
   end
 
 end
