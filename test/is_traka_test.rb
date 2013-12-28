@@ -71,7 +71,22 @@ class IsTrakaTest < ActiveSupport::TestCase
   end
 
   test "TrakaChange can give unabridged list of changes" do
-    assert true
+    p = Product.create(:name => "Product A")
+    c = Cheese.create(:name => "Cheese A")
+
+    p.name = "New name"
+    p.save
+
+    p.name = "Another name"
+    p.save
+
+    p.destroy
+    c.destroy
+
+    # Abridged version would be empty because destroys would cancel out creates.
+    assert_equal TrakaChange.staged_changes.count, 6
+    assert_equal TrakaChange.staged_changes.map(&:klass), ["Product", "Cheese", "Product", "Product", "Product", "Cheese"]
+    assert_equal TrakaChange.staged_changes.map(&:action_type), ["create", "create", "update", "update", "destroy", "destroy"]
   end
 
 end 
