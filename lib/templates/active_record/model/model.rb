@@ -34,11 +34,11 @@ class TrakaChange < ActiveRecord::Base
     self.where(:version => v)
   end
 
-  def changes_from(v)
+  def self.changes_from(v)
     changes_in_range(v)
   end
 
-  def self.changes_in_range(from=1, to=latest_version)
+  def self.changes_in_range(from=1, to=latest_version + 1)
     self.where(["version >= ? AND version <= ?", from, to])
   end
 
