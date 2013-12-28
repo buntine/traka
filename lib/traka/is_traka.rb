@@ -62,6 +62,9 @@ module Traka
 
       def filter_changes(c)
         # TODO: Implement.
+        # CREATE: Remove any subsequent UPDATES
+        # UPDATE: Remove and subsequent UPDATES
+        # DESTROY: Remove and preceding CREATES and UPDATES
         c
       end
     end
