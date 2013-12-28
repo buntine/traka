@@ -63,8 +63,17 @@ module Traka
       def filter_changes(c)
         # TODO: Implement.
         # CREATE: Remove any subsequent UPDATES
-        # UPDATE: Remove and subsequent UPDATES
-        # DESTROY: Remove and preceding CREATES and UPDATES
+        # UPDATE: Remove any subsequent UPDATES
+        # DESTROY: Remove any preceding CREATES and UPDATES
+
+        # FOR EACH c
+        #  if CREATE
+        #    DELETE if DESTROY for same uuid exists
+        #  if UPDATE
+        #    DELETE if CREATE for same uuid exists
+        #    DELETE if another UPDATE for same uuid exists
+        #    DELETE if DESTROY for same uuid exists
+
         c
       end
     end
