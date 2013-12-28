@@ -19,6 +19,8 @@ module Traka
     end
 
     module LocalInstanceMethods
+      private
+
       def set_uuid
         write_attribute(self.class.traka_uuid, SecureRandom.hex(20))
       end
@@ -34,8 +36,6 @@ module Traka
       def record_destroy
         record_traka_change("destroy")
       end
-
-     private
 
       def record_traka_change(action_type)
         TrakaChange.create(:klass => self.class.to_s,

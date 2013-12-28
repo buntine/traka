@@ -40,12 +40,11 @@ module Traka
       end
 
       def changes_for_v(v, concise=true)
-        c = where(:version => v)
-        concise ? filter_changes(c) : c
+        changes_in_range(v, v, concise)
       end
 
       def changes_from(v, concise=true)
-        changes_in_range(v, concise=true)
+        changes_in_range(v, latest_version + 1, concise=true)
       end
 
       def changes_in_range(from=1, to=latest_version + 1, concise=true)

@@ -89,4 +89,12 @@ class IsTrakaTest < ActiveSupport::TestCase
     assert_equal TrakaChange.staged_changes.map(&:action_type), ["create", "create", "update", "update", "destroy", "destroy"]
   end
 
+  test "TrakaChange can resolve AR objects" do
+    p = Product.create(:name => "Product A")
+    c = Cheese.create(:name => "Cheese A")
+
+    assert_equal TrakaChange.staged_changes.first.get_record, p
+    assert_equal TrakaChange.staged_changes.last.get_record, c
+  end
+
 end 

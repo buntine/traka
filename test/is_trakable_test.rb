@@ -91,12 +91,4 @@ class IsTrakableTest < Test::Unit::TestCase
     assert_equal tc.action_type, "update"
   end
 
-  def test_traka_change_can_resolve_ar_objects
-    p = Product.create(:name => "Product A")
-    c = Cheese.create(:name => "Cheese A")
-
-    assert_equal TrakaChange.staged_changes.first.get_record, p
-    assert_equal TrakaChange.staged_changes.last.get_record, c
-  end
-
 end
