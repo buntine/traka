@@ -1,6 +1,11 @@
 require 'test_helper'
  
 class IsTrakableTest < Test::Unit::TestCase
+
+  def setup
+    TrakaChange.destroy_all
+    TrakaChange.set_version!(1)
+  end
  
   def test_a_products_traka_uuid_should_be_uuid
     assert_equal "uuid", Product.traka_uuid
@@ -84,6 +89,14 @@ class IsTrakableTest < Test::Unit::TestCase
 
     assert_equal tc.klass, "Cheese"
     assert_equal tc.action_type, "update"
+  end
+
+  def test_traka_change_can_resolve_ar_objects
+    p = Product.create(:name => "Product A")
+    c = Cheese.create(:name => "Cheese A")
+
+    assert_equal TrakaChange.staged_changes.first.get_record, p
+    assert_equal TrakaChange.staged_changes.last.get_record, c
   end
 
 end

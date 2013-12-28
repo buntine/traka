@@ -71,6 +71,11 @@ module Traka
       def set_version
         self.version = self.class.latest_version + 1
       end
+
+      def get_record
+        ar = ActiveRecord::Base.const_get(self.klass)
+        ar.where(ar.traka_uuid => self.uuid).first
+      end
     end
 
   end

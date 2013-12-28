@@ -47,7 +47,15 @@ class IsTrakaTest < ActiveSupport::TestCase
   end
 
   test "TrakaChange can list differing changes" do
-    assert true
+    p = Product.create(:name => "Product A")
+    c = Cheese.create(:name => "Cheese A")
+
+    p.name = "New name"
+    p.save
+
+    assert_equal TrakaChange.staged_changes.count, 3
+    assert_equal TrakaChange.staged_changes.map(&:klass), ["Product", "Cheese", "Product"]
+    assert_equal TrakaChange.staged_changes.map(&:action_type), ["create", "create", "update"]
   end
 
   test "TrakaChange can filter out obsolete create/destroy actions" do
@@ -59,6 +67,10 @@ class IsTrakaTest < ActiveSupport::TestCase
   end
 
   test "TrakaChange can filter out obsolete multiple update actions" do
+    assert true
+  end
+
+  test "TrakaChange can give unabridged list of changes" do
     assert true
   end
 
