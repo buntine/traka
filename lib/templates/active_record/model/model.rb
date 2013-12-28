@@ -26,20 +26,22 @@ class TrakaChange < ActiveRecord::Base
     end
   end
 
-  def self.staged_changes
-    changes_for_v(self.latest_version + 1)
+  def self.staged_changes(concise=true)
+    changes_for_v(self.latest_version + 1, concise)
   end
 
-  def self.changes_for_v(v)
-    self.where(:version => v)
+  def self.changes_for_v(v, concise=true)
+    c = self.where(:version => v)
+    concise ? filter_changes(c) : c
   end
 
-  def self.changes_from(v)
-    changes_in_range(v)
+  def self.changes_from(v, concise=true)
+    changes_in_range(v, concise=true)
   end
 
-  def self.changes_in_range(from=1, to=latest_version + 1)
-    self.where(["version >= ? AND version <= ?", from, to])
+  def self.changes_in_range(from=1, to=latest_version + 1, concise=true)
+    c = self.where(["version >= ? AND version <= ?", from, to])
+    concise ? filter_changes(c) : c
   end
 
  private
@@ -52,6 +54,11 @@ class TrakaChange < ActiveRecord::Base
     File.join(
       Rails.root, "public", "system",
       "api", "version.txt")
+  end
+
+  def self.filter_changes(c)
+    # TODO: Implement.
+    c
   end
 
 end

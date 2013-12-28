@@ -44,4 +44,19 @@ class TrakaTest < ActiveSupport::TestCase
     assert_equal TrakaChange.changes_from(1).map(&:klass), ["Product", "Cheese", "Product"]
     assert_equal TrakaChange.changes_from(1).map(&:action_type), ["create", "create", "create"]
   end
+
+  test "TrakaChange can list differing changes" do
+
+  end
+
+  test "TrakaChange can filter out obsolete create/destroy actions" do
+    assert true
+  end
+
+  test "TrakaChange can filter out obsolete update/destroy actions" do
+    assert true
+  end
+
+  test "TrakaChange can filter out obsolete multiple update actions" do
+  end
 end
