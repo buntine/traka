@@ -58,16 +58,68 @@ class IsTrakaTest < ActiveSupport::TestCase
     assert_equal TrakaChange.staged_changes.map(&:action_type), ["create", "create", "update"]
   end
 
-  test "TrakaChange can filter out obsolete create/destroy actions" do
-    assert true
+  test "TrakaChange can filter out obsolete create->destroy actions" do
+    p = Product.create(:name => "Product A")
+    c = Cheese.create(:name => "Cheese A")
+
+    p.destroy
+
+    assert_equal TrakaChange.staged_changes.count, 1
+    assert_equal TrakaChange.staged_changes.map(&:klass), ["Cheese"]
+    assert_equal TrakaChange.staged_changes.map(&:action_type), ["create"]
   end
 
-  test "TrakaChange can filter out obsolete update/destroy actions" do
-    assert true
+  test "TrakaChange can filter out obsolete update->destroy actions" do
+    p = Product.create(:name => "Product A")
+    c = Cheese.create(:name => "Cheese A")
+
+    TrakaChange.publish_new_version!
+
+    p.name = "New name"
+    p.save
+    c.name = "New name"
+    c.save
+
+    p.destroy
+
+    assert_equal TrakaChange.staged_changes.count, 1
+    assert_equal TrakaChange.staged_changes.map(&:klass), ["Cheese"]
+    assert_equal TrakaChange.staged_changes.map(&:action_type), ["update"]
   end
 
-  test "TrakaChange can filter out obsolete multiple update actions" do
-    assert true
+  test "TrakaChange can filter out obsolete create->update actions" do
+    p = Product.create(:name => "Product A")
+    c = Cheese.create(:name => "Cheese A")
+
+    p.name = "New name"
+    p.save
+
+    p.name = "Another name"
+    p.save
+
+    assert_equal TrakaChange.staged_changes.count, 2
+    assert_equal TrakaChange.staged_changes.map(&:klass), ["Product", "Cheese"]
+    assert_equal TrakaChange.staged_changes.map(&:action_type), ["create", "create"]
+  end
+
+  test "TrakaChange can filter out obsolete update->update actions" do
+    p = Product.create(:name => "Product A")
+    c = Cheese.create(:name => "Cheese A")
+
+    TrakaChange.publish_new_version!
+
+    p.name = "New name"
+    p.save
+
+    p.name = "Another name"
+    p.save
+
+    c.name = "New name"
+    c.save
+
+    assert_equal TrakaChange.staged_changes.count, 2
+    assert_equal TrakaChange.staged_changes.map(&:klass), ["Product", "Cheese"]
+    assert_equal TrakaChange.staged_changes.map(&:action_type), ["update", "update"]
   end
 
   test "TrakaChange can give unabridged list of changes" do
