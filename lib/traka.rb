@@ -1,4 +1,5 @@
 require 'traka/is_trakable'
+require 'traka/is_traka'
 
 module Traka
 
