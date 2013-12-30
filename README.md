@@ -1,4 +1,4 @@
-= Traka
+# Traka
 
 A Rails 3+ plugin for simple tracking of changes to resources over time.
 
@@ -12,55 +12,73 @@ Traka is useful in conjunction with APIs that need to be able to have simple ver
 neds to send out a changeset when a new version of the data is published. This way your API can send just the data
 that has been created/updated/destroyed instead of sending out everything every time.
 
-== Install
+## Install
 
   gem install traka
   rails g traka:install
 
-== Setup
+## Setup
 
 Add the following to each model you want to keep track of:
 
+```ruby 
   is_trakable
+```
 
 Each model should have a string "uuid" column. If you want to use a different column name, just specify it:
 
+```ruby 
   is_trakable :traka_uuid => "code"
+```
 
-== Use
+## Use
 
 To access the current set of staged changes:
 
+```ruby 
   TrakaChange.staged_changes ## => [traka_change_record, ...]
+```
 
 Each TrakaChange record can be resolved to the original record (except "destroy"):
 
+```ruby 
   TrakaChange.staged_changes.first.get_record ## => record
+```
 
 To fetch a changeset across multiple versions. Assuming current version is 5, to get changes from v2 onwards:
 
+```ruby 
   TrakaChange.changes_from(2) ## => [traka_change_record, ...]
+```
 
 Or just get changes from v2 to v4:
 
+```ruby 
   TrakaChange.changes_in_range(2, 4) ## => [traka_change_record, ...]
+```
 
 The above methods will automatically cleanse obsolete changes. To see everything:
 
+```ruby 
   TrakaChange.changes_from(2, false)        ## => [traka_change_record, ...]
   TrakaChange.changes_in_range(2, 4, false) ## => [traka_change_record, ...]
+```
 
 To see the current version:
 
+```ruby 
   TrakaChange.latest_version
+```
 
 To publish a new version:
 
+```ruby 
   TrakaChange.latest_version       ## => 1
   TrakaChange.publish_new_version!
   TrakaChange.latest_version       ## => 2
+```
 
-== Example
+## Example
 
 Assuming models called Product and Car exist.
 
