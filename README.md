@@ -38,32 +38,33 @@ Each model should have a string "uuid" column. If you want to use a different co
 To access the current set of staged changes:
 
 ```ruby 
-  TrakaChange.staged_changes ## => [traka_change_record, ...]
+  TrakaChange.staged_changes #=> [traka_change_record, ...]
 ```
 
 Each TrakaChange record can be resolved to the original record (except "destroy"):
 
 ```ruby 
-  TrakaChange.staged_changes.first.get_record ## => record
+  TrakaChange.staged_changes.first.get_record #=> record
 ```
 
 To fetch a changeset across multiple versions. Assuming current version is 5, to get changes from v2 onwards:
 
 ```ruby 
-  TrakaChange.changes_from(2) ## => [traka_change_record, ...]
+  TrakaChange.changes_from(2) #=> [traka_change_record, ...]
 ```
 
 Or just get changes from v2 to v4:
 
 ```ruby 
-  TrakaChange.changes_in_range(2, 4) ## => [traka_change_record, ...]
+  TrakaChange.changes_in_range(2, 4) #=> [traka_change_record, ...]
 ```
 
 The above methods will automatically cleanse obsolete changes. To see everything:
 
 ```ruby 
-  TrakaChange.changes_from(2, false)        ## => [traka_change_record, ...]
-  TrakaChange.changes_in_range(2, 4, false) ## => [traka_change_record, ...]
+  TrakaChange.staged_changes(false)         #=> [traka_change_record, ...]
+  TrakaChange.changes_from(2, false)        #=> [traka_change_record, ...]
+  TrakaChange.changes_in_range(2, 4, false) #=> [traka_change_record, ...]
 ```
 
 To see the current version:
@@ -75,9 +76,9 @@ To see the current version:
 To publish a new version:
 
 ```ruby 
-  TrakaChange.latest_version       ## => 1
+  TrakaChange.latest_version       #=> 1
   TrakaChange.publish_new_version!
-  TrakaChange.latest_version       ## => 2
+  TrakaChange.latest_version       #=> 2
 ```
 
 ## Example
