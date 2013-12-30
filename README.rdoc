@@ -1,3 +1,53 @@
 = Traka
 
 Simple tracking of changes to resources over time.
+
+Traka will keep track of *create*, *update* and *destroy* over time in your application. It uses a simple versioning
+system so you can complie groups of changes into blocks.
+
+Changes that cancel each other out will be automatically cleansed from a changeset. For example, if one record is
+created and then destroyed later in the same changeset, the two will cancel each other out.
+
+Traka is useful in conjunction with APIs that need to be able to have simple versioning. For example, your app
+neds to send out a changeset when a new version of the data is published. This way your API can send just the data
+that has been created/updated/destroyed instead of sending out everything every time.
+
+== Install
+
+  gem install traka
+  rails g traka:install
+
+== Use
+
+Add the following to each model you want to keep track of:
+
+  is_trakable
+
+Each model should have a string "uuid" column. If you want to use a different column name, just specify it:
+
+  is_trakable :traka_uuid => "code"
+
+To access the current set of staged changes:
+
+  TrakaChange.staged_changes ## => [traka_change_record, ...]
+
+Each TrakaChange record can be resolved to the original record (except "destroy"):
+
+  TrakaChange.staged_changes.first.get_record ## => record
+
+To fetch a changeset across multiple versions. Assuming current version is 5, to get changes from v2 onwards:
+
+  TrakaChange.changes_from(2) ## => [traka_change_record, ...]
+
+Or just get changes from v2 to v4:
+
+  TrakaChange.changes_in_range(2, 4) ## => [traka_change_record, ...]
+
+The above methods will automatically cleanse obsolete changes. To see everything:
+
+  TrakaChange.changes_from(2, false)        ## => [traka_change_record, ...]
+  TrakaChange.changes_in_range(2, 4, false) ## => [traka_change_record, ...]
+
+To publish a new version:
+
+  TrakaChange.publish_new_version!
