@@ -50,12 +50,15 @@ class IsTrakaTest < ActiveSupport::TestCase
     p = Product.create(:name => "Product A")
     c = Cheese.create(:name => "Cheese A")
 
+    TrakaChange.publish_new_version!
+
     p.name = "New name"
     p.save
+    c.destroy
 
-    assert_equal TrakaChange.staged_changes.count, 3
-    assert_equal TrakaChange.staged_changes.map(&:klass), ["Product", "Cheese", "Product"]
-    assert_equal TrakaChange.staged_changes.map(&:action_type), ["create", "create", "update"]
+    assert_equal TrakaChange.staged_changes.count, 2
+    assert_equal TrakaChange.staged_changes.map(&:klass), ["Product", "Cheese"]
+    assert_equal TrakaChange.staged_changes.map(&:action_type), ["update", "destroy"]
   end
 
   test "TrakaChange can filter out obsolete create->destroy actions" do
@@ -136,9 +139,9 @@ class IsTrakaTest < ActiveSupport::TestCase
     c.destroy
 
     # Abridged version would be empty because destroys would cancel out creates.
-    assert_equal TrakaChange.staged_changes.count, 6
-    assert_equal TrakaChange.staged_changes.map(&:klass), ["Product", "Cheese", "Product", "Product", "Product", "Cheese"]
-    assert_equal TrakaChange.staged_changes.map(&:action_type), ["create", "create", "update", "update", "destroy", "destroy"]
+    assert_equal TrakaChange.staged_changes(false).count, 6
+    assert_equal TrakaChange.staged_changes(false).map(&:klass), ["Product", "Cheese", "Product", "Product", "Product", "Cheese"]
+    assert_equal TrakaChange.staged_changes(false).map(&:action_type), ["create", "create", "update", "update", "destroy", "destroy"]
   end
 
   test "TrakaChange can resolve AR objects" do

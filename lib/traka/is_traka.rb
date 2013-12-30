@@ -60,21 +60,29 @@ module Traka
           "api", "version.txt")
       end
 
-      def filter_changes(c)
-        # TODO: Implement.
-        # CREATE: Remove any subsequent UPDATES
-        # UPDATE: Remove any subsequent UPDATES
-        # DESTROY: Remove any preceding CREATES and UPDATES
-
+      def filter_changes(changes)
         # FOR EACH c
         #  if CREATE
         #    DELETE if DESTROY for same uuid exists
+        #  if DESTROY
+        #    DELETE if CREATE for same uuid exists
         #  if UPDATE
         #    DELETE if CREATE for same uuid exists
         #    DELETE if another UPDATE for same uuid exists
         #    DELETE if DESTROY for same uuid exists
 
-        c
+        changes.reject do |c|
+          if c.action_type == "create"
+            changes.any? { |cc| cc.action_type == "destroy" and cc.uuid == c.uuid }
+          elsif c.action_type == "destroy"
+            changes.any? { |cc| cc.action_type == "create" and cc.uuid == c.uuid } or
+            changes.any? { |cc| cc.action_type == "update" and cc.uuid == c.uuid }
+          elsif c.action_type == "update"
+            changes.any? { |cc| cc.action_type == "create" and cc.uuid == c.uuid } or
+            changes.any? { |cc| cc.action_type == "destroy" and cc.uuid == c.uuid }
+        #    DELETE if another UPDATE for same uuid exists
+          end
+        end
       end
     end
 
