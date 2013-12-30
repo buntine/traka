@@ -1,6 +1,6 @@
 = Traka
 
-Simple tracking of changes to resources over time.
+A Rails 3+ plugin for simple tracking of changes to resources over time.
 
 Traka will keep track of *create*, *update* and *destroy* over time in your application. It uses a simple versioning
 system so you can complie groups of changes into blocks.
@@ -48,6 +48,12 @@ The above methods will automatically cleanse obsolete changes. To see everything
   TrakaChange.changes_from(2, false)        ## => [traka_change_record, ...]
   TrakaChange.changes_in_range(2, 4, false) ## => [traka_change_record, ...]
 
+To see the current version:
+
+  TrakaChange.latest_version
+
 To publish a new version:
 
+  TrakaChange.latest_version       ## => 1
   TrakaChange.publish_new_version!
+  TrakaChange.latest_version       ## => 2
