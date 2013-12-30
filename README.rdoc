@@ -64,6 +64,7 @@ To publish a new version:
 
 Assuming models called Product and Car exist.
 
+```ruby 
   a = Product.create(:name => "Product 1")
   b = Product.create(:name => "Product 2")
   c = Car.create(:name => "Car 1")
@@ -94,5 +95,6 @@ Assuming models called Product and Car exist.
 
   # All interactions with "b" are filtered out because we've created and destroyed it in the same changeset: v1+v2.
   TrakaChange.changes_from(1) #=> [TrakaChange<create>, TrakaChange<create>, TrakaChange<update>]
+```
 
 See the unit tests for a bunch more examples.
