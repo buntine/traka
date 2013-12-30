@@ -65,7 +65,7 @@ module Traka
       # there is no point giving out 4 "update" changes, just one will
       # suffice. And if you "create" and then "destroy" a record in one
       # changeset, they should cancel each other out.
-      # This is not a very efficient algorithm. May need to re-think
+      # This is not an efficient algorithm. May need to re-think
       # for huge change-sets.
       def filter_changes(changes)
         changes.reject do |c|
