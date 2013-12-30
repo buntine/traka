@@ -14,8 +14,10 @@ that has been created/updated/destroyed instead of sending out everything every 
 
 ## Install
 
+```
   gem install traka
   rails g traka:install
+```
 
 ## Setup
 
