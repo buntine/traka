@@ -17,7 +17,7 @@ that has been created/updated/destroyed instead of sending out everything every 
   gem install traka
   rails g traka:install
 
-== Use
+== Setup
 
 Add the following to each model you want to keep track of:
 
@@ -26,6 +26,8 @@ Add the following to each model you want to keep track of:
 Each model should have a string "uuid" column. If you want to use a different column name, just specify it:
 
   is_trakable :traka_uuid => "code"
+
+== Use
 
 To access the current set of staged changes:
 
@@ -57,3 +59,40 @@ To publish a new version:
   TrakaChange.latest_version       ## => 1
   TrakaChange.publish_new_version!
   TrakaChange.latest_version       ## => 2
+
+== Example
+
+Assuming models called Product and Car exist.
+
+  a = Product.create(:name => "Product 1")
+  b = Product.create(:name => "Product 2")
+  c = Car.create(:name => "Car 1")
+
+  TrakaChange.staged_changes  ## => [TrakaChange<create>, TrakaChange<create>, TrakaChange<create>]
+
+  b.name = "New name"
+  b.save
+
+  # The "update" above is filtered out because we already know to fetch "b" because it's just been created.
+  TrakaChange.staged_changes  ## => [TrakaChange<create>, TrakaChange<create>, TrakaChange<create>]
+
+  TrakaChange.publish_new_version!
+
+  b.destroy
+  a.name = "New name"
+  a.save
+
+  TrakaChange.staged_changes                 ## => [TrakaChange<destroy>, TrakaChange<update>]
+  TrakaChange.staged_changes.last.get_record ## => a
+
+  a.name = "Another name"
+  a.save
+
+  # The update above is filtered because we already know "a" has been updated in this changeset.
+  TrakaChange.staged_changes                 ## => [TrakaChange<destroy>, TrakaChange<update>]
+  TrakaChange.staged_changes.last.get_record ## => a
+
+  # All interactions with "b" are filtered out because we've created and destroyed it in the same changeset: v1+v2.
+  TrakaChange.changes_from(1) ## => [TrakaChange<create>, TrakaChange<create>, TrakaChange<update>]
+
+See the unit tests for a bunch more examples.
