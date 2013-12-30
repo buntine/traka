@@ -117,6 +117,9 @@ class IsTrakaTest < ActiveSupport::TestCase
     p.name = "Another name"
     p.save
 
+    p.name = "And another name"
+    p.save
+
     c.name = "New name"
     c.save
 

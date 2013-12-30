@@ -60,17 +60,14 @@ module Traka
           "api", "version.txt")
       end
 
-      def filter_changes(changes)
-        # FOR EACH c
-        #  if CREATE
-        #    DELETE if DESTROY for same uuid exists
-        #  if DESTROY
-        #    DELETE if CREATE for same uuid exists
-        #  if UPDATE
-        #    DELETE if CREATE for same uuid exists
-        #    DELETE if another UPDATE for same uuid exists
-        #    DELETE if DESTROY for same uuid exists
 
+      # Filters out obsolete changes in the given set. For example,
+      # there is no point giving out 4 "update" changes, just one will
+      # suffice. And if you "create" and then "destroy" a record in one
+      # changeset, they should cancel each other out.
+      # This is not a very efficient algorithm. May need to re-think
+      # for huge change-sets.
+      def filter_changes(changes)
         changes.reject do |c|
           if c.action_type == "create"
             changes.any? { |cc| cc.action_type == "destroy" and cc.uuid == c.uuid }
@@ -79,8 +76,8 @@ module Traka
             changes.any? { |cc| cc.action_type == "update" and cc.uuid == c.uuid }
           elsif c.action_type == "update"
             changes.any? { |cc| cc.action_type == "create" and cc.uuid == c.uuid } or
-            changes.any? { |cc| cc.action_type == "destroy" and cc.uuid == c.uuid }
-        #    DELETE if another UPDATE for same uuid exists
+            changes.any? { |cc| cc.action_type == "destroy" and cc.uuid == c.uuid } or
+            changes.any? { |cc| cc.action_type == "update" and cc.uuid == c.uuid and cc.id > c.id }
           end
         end
       end
