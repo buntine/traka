@@ -2,14 +2,14 @@
 
 A Rails 3+ plugin for simple tracking of changes to resources over time.
 
-Traka will keep track of *create*, *update* and *destroy* over time in your application. It uses a simple versioning
+Traka will keep track of *create*, *update* and *destroy* actions over time in your application. It uses a simple versioning
 system so you can complie groups of changes into blocks.
 
 Changes that cancel each other out will be automatically cleansed from a changeset. For example, if one record is
 created and then destroyed later in the same changeset, the two will cancel each other out.
 
-Traka is useful in conjunction with APIs that need to be able to have simple versioning. For example, your app
-neds to send out a changeset when a new version of the data is published. This way your API can send just the data
+Traka is useful in conjunction with APIs that need to be able to have simple versioning. A common use-case is when your
+API needs to send out a succinct changeset when a new version of the data is published. This way your API can send just the data
 that has been created/updated/destroyed instead of sending out everything every time.
 
 ## Install
