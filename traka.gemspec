@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
   s.homepage    = "http://github.com/buntine/traka"
   s.summary     = "Rails 3+ plugin for simple tracking of changes to resources over time."
   s.description = "Rails 3+ plugin for simple tracking of changes to resources over time."
+  s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.md"]
   s.test_files = Dir["test/**/*"]

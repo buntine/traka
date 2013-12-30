@@ -89,6 +89,7 @@ Assuming models called Product and Car exist.
   b = Product.create(:name => "Product 2")
   c = Car.create(:name => "Car 1")
 
+  TrakaChange.latest_version #=> 1
   TrakaChange.staged_changes #=> [TrakaChange<create>, TrakaChange<create>, TrakaChange<create>]
 
   b.name = "New name"
@@ -98,6 +99,8 @@ Assuming models called Product and Car exist.
   TrakaChange.staged_changes #=> [TrakaChange<create>, TrakaChange<create>, TrakaChange<create>]
 
   TrakaChange.publish_new_version!
+
+  TrakaChange.latest_version #=> 2
 
   b.destroy
   a.name = "New name"
