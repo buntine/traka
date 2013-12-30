@@ -113,7 +113,7 @@ Assuming models called Product and Car exist.
   a.name = "Another name"
   a.save
 
-  # The update above is filtered because we already know "a" has been updated in this changeset.
+  # The second update above is filtered because we already know "a" has been updated in this changeset.
   TrakaChange.staged_changes #=> [TrakaChange<destroy>, TrakaChange<update>]
   TrakaChange.staged_changes.last.get_record #=> a
 
