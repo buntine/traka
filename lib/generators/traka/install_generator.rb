@@ -5,8 +5,8 @@ module Traka
 
       desc "Installs Traka into the app."
 
-      def create_model
-        generate "model", "traka_change klass:string uuid:string action_type:string version:integer"
+      def create_migration
+        generate "migration", "traka_change klass:string uuid:string action_type:string version:integer"
       end
 
       def create_version_file

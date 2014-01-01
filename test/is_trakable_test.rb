@@ -3,8 +3,8 @@ require 'test_helper'
 class IsTrakableTest < Test::Unit::TestCase
 
   def setup
-    TrakaChange.destroy_all
-    TrakaChange.set_version!(1)
+    Traka::Change.destroy_all
+    Traka::Change.set_version!(1)
   end
  
   def test_a_products_traka_uuid_should_be_uuid
@@ -34,7 +34,7 @@ class IsTrakableTest < Test::Unit::TestCase
   def test_a_product_should_record_changes_on_create
     c = Product.new(:name => "Product B")
     c.save
-    tc = TrakaChange.last
+    tc = Traka::Change.last
 
     assert_equal tc.klass, "Product"
     assert_equal tc.action_type, "create"
@@ -44,7 +44,7 @@ class IsTrakableTest < Test::Unit::TestCase
     c = Product.new(:name => "Product B")
     c.save
     c.destroy
-    tc = TrakaChange.last
+    tc = Traka::Change.last
 
     assert_equal tc.klass, "Product"
     assert_equal tc.action_type, "destroy"
@@ -55,7 +55,7 @@ class IsTrakableTest < Test::Unit::TestCase
     c.save
     c.name = "New Name"
     c.save
-    tc = TrakaChange.last
+    tc = Traka::Change.last
 
     assert_equal tc.klass, "Product"
     assert_equal tc.action_type, "update"
@@ -64,7 +64,7 @@ class IsTrakableTest < Test::Unit::TestCase
   def test_a_cheese_should_record_changes_on_create
     c = Cheese.new(:name => "Cheese B")
     c.save
-    tc = TrakaChange.last
+    tc = Traka::Change.last
 
     assert_equal tc.klass, "Cheese"
     assert_equal tc.action_type, "create"
@@ -74,7 +74,7 @@ class IsTrakableTest < Test::Unit::TestCase
     c = Cheese.new(:name => "Cheese B")
     c.save
     c.destroy
-    tc = TrakaChange.last
+    tc = Traka::Change.last
 
     assert_equal tc.klass, "Cheese"
     assert_equal tc.action_type, "destroy"
@@ -85,7 +85,7 @@ class IsTrakableTest < Test::Unit::TestCase
     c.save
     c.name = "New Name"
     c.save
-    tc = TrakaChange.last
+    tc = Traka::Change.last
 
     assert_equal tc.klass, "Cheese"
     assert_equal tc.action_type, "update"
