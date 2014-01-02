@@ -11,8 +11,8 @@ module Traka
         self.traka_uuid = (options[:traka_uuid] || :uuid).to_s
 
         before_create :set_uuid, :record_create
-        before_update :record_update
-        before_destroy :record_destroy
+        before_update :set_uuid, :record_update
+        before_destroy :set_uuid, :record_destroy
 
         include Traka::IsTrakable::LocalInstanceMethods
       end
@@ -22,7 +22,11 @@ module Traka
       private
 
       def set_uuid
-        write_attribute(self.class.traka_uuid, SecureRandom.hex(20))
+        f = self.class.traka_uuid
+
+        if self.attributes[f].blank?
+          write_attribute(self.class.traka_uuid, SecureRandom.hex(20))
+        end
       end
 
       def record_create
