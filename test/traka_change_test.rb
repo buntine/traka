@@ -1,6 +1,6 @@
 require 'test_helper'
  
-class IsTrakaTest < ActiveSupport::TestCase
+class TrakaChangeTest < ActiveSupport::TestCase
 
   def setup
     Traka::Change.destroy_all
