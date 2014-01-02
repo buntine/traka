@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    traka (0.0.1)
+    traka (0.0.2)
       rails (~> 3.2.16)
 
 GEM
