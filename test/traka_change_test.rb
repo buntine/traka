@@ -141,10 +141,62 @@ class TrakaChangeTest < ActiveSupport::TestCase
     p.destroy
     c.destroy
 
-    # Abridged version would be empty because destroys would cancel out creates.
-    assert_equal Traka::Change.staged_changes(false).count, 6
-    assert_equal Traka::Change.staged_changes(false).map(&:klass), ["Product", "Cheese", "Product", "Product", "Product", "Cheese"]
-    assert_equal Traka::Change.staged_changes(false).map(&:action_type), ["create", "create", "update", "update", "destroy", "destroy"]
+    # Abridged version would be empty because destroys would cancel out creates and updates.
+    assert_equal Traka::Change.staged_changes(:filter => false).count, 6
+    assert_equal Traka::Change.staged_changes(:filter => false).map(&:klass), ["Product", "Cheese", "Product", "Product", "Product", "Cheese"]
+    assert_equal Traka::Change.staged_changes(:filter => false).map(&:action_type), ["create", "create", "update", "update", "destroy", "destroy"]
+  end
+
+  test "TrakaChange can give changes for sub-set of resources" do
+    p = Product.create(:name => "Product A")
+    c = Cheese.create(:name => "Cheese A")
+
+    p.name = "New name"
+    p.save
+
+    p.name = "Another name"
+    p.save
+
+    assert_equal Traka::Change.staged_changes(:only => [Product]).count, 2
+    assert_equal Traka::Change.staged_changes(:only => [Product]).map(&:klass), ["Product", "Product"]
+    assert_equal Traka::Change.staged_changes(:only => [Product]).map(&:action_type), ["create", "update"]
+  end
+
+  test "TrakaChange can give changes for sub-set of actions" do
+    p = Product.create(:name => "Product A")
+    c = Cheese.create(:name => "Cheese A")
+
+    p.name = "New name"
+    p.save
+
+    p.name = "Another name"
+    p.save
+
+    assert_equal Traka::Change.staged_changes(:actions => [:create]).count, 2
+    assert_equal Traka::Change.staged_changes(:actions => [:create]).map(&:klass), ["Product", "Cheese"]
+    assert_equal Traka::Change.staged_changes(:actions => [:create]).map(&:action_type), ["create", "create"]
+  end
+
+  test "TrakaChange can accept multiple options" do
+    p = Product.create(:name => "Product A")
+    c = Cheese.create(:name => "Cheese A")
+
+    p.name = "New name"
+    p.save
+
+    p.name = "Another name"
+    p.save
+
+    p.destroy
+    c.destroy
+
+    assert_equal Traka::Change.staged_changes(:actions => [:create], :filter => false, :only => [Product, Cheese]).count, 2
+    assert_equal Traka::Change.staged_changes(:actions => [:create], :filter => false, :only => [Product, Cheese]).map(&:klass), ["Product", "Cheese"]
+    assert_equal Traka::Change.staged_changes(:actions => [:create], :filter => false, :only => [Product, Cheese]).map(&:action_type), ["create", "create"]
+
+    assert_equal Traka::Change.staged_changes(:actions => [:create, :update], :filter => false).count, 4
+    assert_equal Traka::Change.staged_changes(:actions => [:create], :filter => false, :only => [Product, Cheese]).map(&:klass), ["Product", "Cheese", "Product", "Cheese"]
+    assert_equal Traka::Change.staged_changes(:actions => [:create], :filter => false, :only => [Product, Cheese]).map(&:action_type), ["create", "create", "update", "update"]
   end
 
   test "TrakaChange can resolve AR objects" do

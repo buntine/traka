@@ -55,7 +55,7 @@ To access the current set of staged changes:
 Each Traka::Change record can be resolved to the original record (except "destroy"):
 
 ```ruby 
-  Traka::Change.staged_changes.first.get_record #=> record
+  Traka::Change.staged_changes.first.get_record #=> <ActiveRecordObject>
 ```
 
 To fetch a changeset across multiple versions. Assuming current version is 5, to get changes from v2 onwards:
