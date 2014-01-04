@@ -30,19 +30,25 @@ module Traka
         end
       end
 
-      def staged_changes(concise=true)
-        changes_for_v(latest_version + 1, concise)
+      def staged_changes(opts={})
+        opts = {:version => latest_version + 1,
+                :from_version => 1,
+                :filter => true,
+                :actions => [],
+                :only => []}.merge(opts)
+
+        changes_for_v(latest_version + 1, opts)
       end
 
-      def changes_for_v(v, concise=true)
-        changes_in_range(v, v, concise)
+      def changes_for_v(v, opts={})
+        changes_in_range(v, v, opts)
       end
 
-      def changes_from(v, concise=true)
-        changes_in_range(v, latest_version + 1, concise=true)
+      def changes_from(v, opts={})
+        changes_in_range(v, latest_version + 1, opts)
       end
 
-      def changes_in_range(from=1, to=latest_version + 1, concise=true)
+      def changes_in_range(from=1, to=latest_version + 1, opts={})
         c = where(["version >= ? AND version <= ?", from, to])
         concise ? filter_changes(c) : c
       end

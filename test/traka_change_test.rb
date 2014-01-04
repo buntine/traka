@@ -41,9 +41,27 @@ class TrakaChangeTest < ActiveSupport::TestCase
     assert_equal Traka::Change.staged_changes.count, 1
     assert_equal Traka::Change.staged_changes.first.klass, "Product"
 
-    assert_equal Traka::Change.changes_from(1).count, 3
-    assert_equal Traka::Change.changes_from(1).map(&:klass), ["Product", "Cheese", "Product"]
-    assert_equal Traka::Change.changes_from(1).map(&:action_type), ["create", "create", "create"]
+    assert_equal Traka::Change.staged_changes(:from_version => 1).count, 3
+    assert_equal Traka::Change.staged_changes(:from_version => 1).map(&:klass), ["Product", "Cheese", "Product"]
+    assert_equal Traka::Change.staged_changes(:from_version => 1).map(&:action_type), ["create", "create", "create"]
+  end
+
+  test "TrakaChange can list changes for a particular version" do
+    p = Product.create(:name => "Product A")
+    c = Cheese.create(:name => "Cheese A")
+
+    assert_equal Traka::Change.staged_changes.count, 2
+
+    Traka::Change.publish_new_version!
+
+    p2 = Product.create(:name => "Product B")
+
+    assert_equal Traka::Change.staged_changes.count, 1
+    assert_equal Traka::Change.staged_changes.first.klass, "Product"
+
+    assert_equal Traka::Change.staged_changes(:version => 1).count, 2
+    assert_equal Traka::Change.staged_changes(:version => 1).map(&:klass), ["Product", "Cheese"]
+    assert_equal Traka::Change.staged_changes(:version => 1).map(&:action_type), ["create", "create"]
   end
 
   test "TrakaChange can list differing changes" do
