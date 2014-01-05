@@ -55,27 +55,39 @@ To access the current set of staged changes:
 Each Traka::Change record can be resolved to the original record (except "destroy"):
 
 ```ruby 
-  Traka::Change.staged_changes.first.get_record #=> <ActiveRecordObject>
+  c = Traka::Change.staged_changes.first #=> <Traka::Change>
+  c.get_record                           #=> <ActiveRecordObject>
 ```
 
 To fetch a changeset across multiple versions. Assuming current version is 5, to get changes from v2 onwards:
 
 ```ruby 
-  Traka::Change.changes_from(2) #=> [<Traka::Change>, ...]
+  Traka::Change.staged_changes(:version => 2) #=> [<Traka::Change>, ...]
 ```
 
 Or just get changes from v2 to v4:
 
 ```ruby 
-  Traka::Change.changes_in_range(2, 4) #=> [<Traka::Change>, ...]
+  Traka::Change.staged_changes(:version => (2..4)) #=> [<Traka::Change>, ...]
 ```
 
 The above methods will automatically cleanse obsolete changes. To see everything:
 
 ```ruby 
-  Traka::Change.staged_changes(false)         #=> [<Traka::Change>, ...]
-  Traka::Change.changes_from(2, false)        #=> [<Traka::Change>, ...]
-  Traka::Change.changes_in_range(2, 4, false) #=> [<Traka::Change>, ...]
+  Traka::Change.staged_changes(:filter => false)                #=> [<Traka::Change>, ...]
+  Traka::Change.staged_changes(:version => 2, :filter => false) #=> [<Traka::Change>, ...]
+```
+
+You can also limit the changes to a particular set of models (assuming Product and Category models exist):
+
+```ruby
+  Traka::Change.staged_changes(:only => [Product, Category]) #=> [<Traka::Change>, ...]
+```
+
+And finally, if you only want to see a particular subset of actions (:create, :update and :destroy):
+
+```ruby
+  Traka::Change.staged_changes(:actions => [:create, :update]) #=> [<Traka::Change>, ...]
 ```
 
 To see the current version:
