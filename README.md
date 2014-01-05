@@ -90,6 +90,8 @@ And finally, if you only want to see a particular subset of actions (:create, :u
   Traka::Change.staged_changes(:actions => [:create, :update]) #=> [<Traka::Change>, ...]
 ```
 
+Obviously, all options above can be mixed and matched in logical ways.
+
 To see the current version:
 
 ```ruby 
@@ -141,7 +143,7 @@ Assuming models called Product and Car exist.
   Traka::Change.staged_changes.last.get_record #=> a
 
   # All interactions with "b" are filtered out because we've created and destroyed it in the same changeset: v1+v2.
-  Traka::Change.changes_from(1) #=> [<Traka::Change><create>, <Traka::Change><create>, <Traka::Change><update>]
+  Traka::Change.staged_changes(:version => 1) #=> [<Traka::Change><create>, <Traka::Change><create>, <Traka::Change><update>]
 ```
 
 See the unit tests for a bunch more examples.
