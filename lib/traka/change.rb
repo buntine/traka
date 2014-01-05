@@ -32,26 +32,39 @@ module Traka
 
       def staged_changes(opts={})
         opts = {:version => latest_version + 1,
-                :from_version => 1,
                 :filter => true,
                 :actions => [],
                 :only => []}.merge(opts)
 
-        changes_for_v(latest_version + 1, opts)
+        c = where(["version #{opts[:version].is_a?(Range) ? "in" : ">="} (?)", opts[:version]])
+
+        unless opts[:actions].empty?
+          c = c.where(["action_type in (?)", opts[:actions]])
+        end
+
+        unless opts[:only].empty?
+          c = c.where(["klass in (?)", opts[:only].map(&:to_s)])
+        end
+
+        if opts[:filter]
+          filter_changes(c)
+        else
+          c
+        end
       end
 
-      def changes_for_v(v, opts={})
-        changes_in_range(v, v, opts)
-      end
+#      def changes_for_v(v, opts={})
+#        changes_in_range(v, v, opts)
+#      end
 
-      def changes_from(v, opts={})
-        changes_in_range(v, latest_version + 1, opts)
-      end
+#      def changes_from(v, opts={})
+#        changes_in_range(v, latest_version + 1, opts)
+#      end
 
-      def changes_in_range(from=1, to=latest_version + 1, opts={})
-        c = where(["version >= ? AND version <= ?", from, to])
-        concise ? filter_changes(c) : c
-      end
+#      def changes_in_range(from=1, to=latest_version + 1, opts={})
+#        c = where(["version >= ? AND version <= ?", from, to])
+#        concise ? filter_changes(c) : c
+#      end
 
       private
 
