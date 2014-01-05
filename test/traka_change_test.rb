@@ -59,9 +59,9 @@ class TrakaChangeTest < ActiveSupport::TestCase
     assert_equal Traka::Change.staged_changes.count, 1
     assert_equal Traka::Change.staged_changes.first.klass, "Product"
 
-    assert_equal Traka::Change.staged_changes(:version => (1..1)).count, 2
-    assert_equal Traka::Change.staged_changes(:version => (1..1)).map(&:klass), ["Product", "Cheese"]
-    assert_equal Traka::Change.staged_changes(:version => (1..1)).map(&:action_type), ["create", "create"]
+    assert_equal Traka::Change.staged_changes(:version => (2..2)).count, 2
+    assert_equal Traka::Change.staged_changes(:version => (2..2)).map(&:klass), ["Product", "Cheese"]
+    assert_equal Traka::Change.staged_changes(:version => (2..2)).map(&:action_type), ["create", "create"]
   end
 
   test "TrakaChange can list differing changes" do
@@ -172,12 +172,12 @@ class TrakaChangeTest < ActiveSupport::TestCase
     p.name = "New name"
     p.save
 
-    p.name = "Another name"
-    p.save
+    c.name = "Another name"
+    c.save
 
-    assert_equal Traka::Change.staged_changes(:only => [Product]).count, 2
-    assert_equal Traka::Change.staged_changes(:only => [Product]).map(&:klass), ["Product", "Product"]
-    assert_equal Traka::Change.staged_changes(:only => [Product]).map(&:action_type), ["create", "update"]
+    assert_equal Traka::Change.staged_changes(:only => [Product], :filter => false).count, 2
+    assert_equal Traka::Change.staged_changes(:only => [Product], :filter => false).map(&:klass), ["Product", "Product"]
+    assert_equal Traka::Change.staged_changes(:only => [Product], :filter => false).map(&:action_type), ["create", "update"]
   end
 
   test "TrakaChange can give changes for sub-set of actions" do
@@ -213,8 +213,8 @@ class TrakaChangeTest < ActiveSupport::TestCase
     assert_equal Traka::Change.staged_changes(:actions => [:create], :filter => false, :only => [Product, Cheese]).map(&:action_type), ["create", "create"]
 
     assert_equal Traka::Change.staged_changes(:actions => [:create, :update], :filter => false).count, 4
-    assert_equal Traka::Change.staged_changes(:actions => [:create], :filter => false, :only => [Product, Cheese]).map(&:klass), ["Product", "Cheese", "Product", "Cheese"]
-    assert_equal Traka::Change.staged_changes(:actions => [:create], :filter => false, :only => [Product, Cheese]).map(&:action_type), ["create", "create", "update", "update"]
+    assert_equal Traka::Change.staged_changes(:actions => [:create, :update], :filter => false, :only => [Product, Cheese]).map(&:klass), ["Product", "Cheese", "Product", "Product"]
+    assert_equal Traka::Change.staged_changes(:actions => [:create, :update], :filter => false, :only => [Product, Cheese]).map(&:action_type), ["create", "create", "update", "update"]
   end
 
   test "TrakaChange can resolve AR objects" do

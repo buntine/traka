@@ -53,19 +53,6 @@ module Traka
         end
       end
 
-#      def changes_for_v(v, opts={})
-#        changes_in_range(v, v, opts)
-#      end
-
-#      def changes_from(v, opts={})
-#        changes_in_range(v, latest_version + 1, opts)
-#      end
-
-#      def changes_in_range(from=1, to=latest_version + 1, opts={})
-#        c = where(["version >= ? AND version <= ?", from, to])
-#        concise ? filter_changes(c) : c
-#      end
-
       private
 
       def version_path
