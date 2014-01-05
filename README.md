@@ -49,45 +49,45 @@ Each model should have a string "uuid" column. If you want to use a different co
 To access the current set of staged changes:
 
 ```ruby 
-  Traka::Change.staged_changes #=> [<Traka::Change>, ...]
+  Traka::Change.changes #=> [<Traka::Change>, ...]
 ```
 
 Each Traka::Change record can be resolved to the original record (except "destroy"):
 
 ```ruby 
-  c = Traka::Change.staged_changes.first #=> <Traka::Change>
+  c = Traka::Change.changes.first #=> <Traka::Change>
   c.get_record                           #=> <ActiveRecordObject>
 ```
 
 To fetch a changeset across multiple versions. Assuming current version is 5, to get changes from v2 onwards:
 
 ```ruby 
-  Traka::Change.staged_changes(:version => 2) #=> [<Traka::Change>, ...]
+  Traka::Change.changes(:version => 2) #=> [<Traka::Change>, ...]
 ```
 
 Or just get changes from v2 to v4:
 
 ```ruby 
-  Traka::Change.staged_changes(:version => (2..4)) #=> [<Traka::Change>, ...]
+  Traka::Change.changes(:version => (2..4)) #=> [<Traka::Change>, ...]
 ```
 
 The above methods will automatically cleanse obsolete changes. To see everything:
 
 ```ruby 
-  Traka::Change.staged_changes(:filter => false)                #=> [<Traka::Change>, ...]
-  Traka::Change.staged_changes(:version => 2, :filter => false) #=> [<Traka::Change>, ...]
+  Traka::Change.changes(:filter => false)                #=> [<Traka::Change>, ...]
+  Traka::Change.changes(:version => 2, :filter => false) #=> [<Traka::Change>, ...]
 ```
 
 You can also limit the changes to a particular set of models (assuming Product and Category models exist):
 
 ```ruby
-  Traka::Change.staged_changes(:only => [Product, Category]) #=> [<Traka::Change>, ...]
+  Traka::Change.changes(:only => [Product, Category]) #=> [<Traka::Change>, ...]
 ```
 
 And finally, if you only want to see a particular subset of actions (:create, :update and :destroy):
 
 ```ruby
-  Traka::Change.staged_changes(:actions => [:create, :update]) #=> [<Traka::Change>, ...]
+  Traka::Change.changes(:actions => [:create, :update]) #=> [<Traka::Change>, ...]
 ```
 
 Obviously, all options above can be mixed and matched in logical ways.
@@ -116,13 +116,13 @@ Assuming models called Product and Car exist.
   c = Car.create(:name => "Car 1")
 
   Traka::Change.latest_version #=> 1
-  Traka::Change.staged_changes #=> [<Traka::Change><create>, <Traka::Change><create>, <Traka::Change><create>]
+  Traka::Change.changes #=> [<Traka::Change><create>, <Traka::Change><create>, <Traka::Change><create>]
 
   b.name = "New name"
   b.save
 
   # The "update" above is filtered out because we already know to fetch "b" because it's just been created.
-  Traka::Change.staged_changes #=> [<Traka::Change><create>, <Traka::Change><create>, <Traka::Change><create>]
+  Traka::Change.changes #=> [<Traka::Change><create>, <Traka::Change><create>, <Traka::Change><create>]
 
   Traka::Change.publish_new_version!
 
@@ -132,18 +132,18 @@ Assuming models called Product and Car exist.
   a.name = "New name"
   a.save
 
-  Traka::Change.staged_changes #=> [<Traka::Change><destroy>, <Traka::Change><update>]
-  Traka::Change.staged_changes.last.get_record #=> a
+  Traka::Change.changes #=> [<Traka::Change><destroy>, <Traka::Change><update>]
+  Traka::Change.changes.last.get_record #=> a
 
   a.name = "Another name"
   a.save
 
   # The second update above is filtered because we already know "a" has been updated in this changeset.
-  Traka::Change.staged_changes #=> [<Traka::Change><destroy>, <Traka::Change><update>]
-  Traka::Change.staged_changes.last.get_record #=> a
+  Traka::Change.changes #=> [<Traka::Change><destroy>, <Traka::Change><update>]
+  Traka::Change.changes.last.get_record #=> a
 
   # All interactions with "b" are filtered out because we've created and destroyed it in the same changeset: v1+v2.
-  Traka::Change.staged_changes(:version => 1) #=> [<Traka::Change><create>, <Traka::Change><create>, <Traka::Change><update>]
+  Traka::Change.changes(:version => 1) #=> [<Traka::Change><create>, <Traka::Change><create>, <Traka::Change><update>]
 ```
 
 See the unit tests for a bunch more examples.

@@ -30,7 +30,7 @@ module Traka
         end
       end
 
-      def staged_changes(opts={})
+      def changes(opts={})
         opts = {:version => latest_version + 1,
                 :filter => true,
                 :actions => [],

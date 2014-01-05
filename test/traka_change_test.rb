@@ -23,45 +23,45 @@ class TrakaChangeTest < ActiveSupport::TestCase
     p = Product.create(:name => "Product A")
     c = Cheese.create(:name => "Cheese A")
 
-    assert_equal Traka::Change.staged_changes.count, 2
-    assert_equal Traka::Change.staged_changes.first.klass, "Product"
-    assert_equal Traka::Change.staged_changes.last.klass, "Cheese"
+    assert_equal Traka::Change.changes.count, 2
+    assert_equal Traka::Change.changes.first.klass, "Product"
+    assert_equal Traka::Change.changes.last.klass, "Cheese"
   end
 
   test "TrakaChange can list changes from a particular version" do
     p = Product.create(:name => "Product A")
     c = Cheese.create(:name => "Cheese A")
 
-    assert_equal Traka::Change.staged_changes.count, 2
+    assert_equal Traka::Change.changes.count, 2
 
     Traka::Change.publish_new_version!
 
     p2 = Product.create(:name => "Product B")
 
-    assert_equal Traka::Change.staged_changes.count, 1
-    assert_equal Traka::Change.staged_changes.first.klass, "Product"
+    assert_equal Traka::Change.changes.count, 1
+    assert_equal Traka::Change.changes.first.klass, "Product"
 
-    assert_equal Traka::Change.staged_changes(:version => 1).count, 3
-    assert_equal Traka::Change.staged_changes(:version => 1).map(&:klass), ["Product", "Cheese", "Product"]
-    assert_equal Traka::Change.staged_changes(:version => 1).map(&:action_type), ["create", "create", "create"]
+    assert_equal Traka::Change.changes(:version => 1).count, 3
+    assert_equal Traka::Change.changes(:version => 1).map(&:klass), ["Product", "Cheese", "Product"]
+    assert_equal Traka::Change.changes(:version => 1).map(&:action_type), ["create", "create", "create"]
   end
 
   test "TrakaChange can list changes for a particular version" do
     p = Product.create(:name => "Product A")
     c = Cheese.create(:name => "Cheese A")
 
-    assert_equal Traka::Change.staged_changes.count, 2
+    assert_equal Traka::Change.changes.count, 2
 
     Traka::Change.publish_new_version!
 
     p2 = Product.create(:name => "Product B")
 
-    assert_equal Traka::Change.staged_changes.count, 1
-    assert_equal Traka::Change.staged_changes.first.klass, "Product"
+    assert_equal Traka::Change.changes.count, 1
+    assert_equal Traka::Change.changes.first.klass, "Product"
 
-    assert_equal Traka::Change.staged_changes(:version => (2..2)).count, 2
-    assert_equal Traka::Change.staged_changes(:version => (2..2)).map(&:klass), ["Product", "Cheese"]
-    assert_equal Traka::Change.staged_changes(:version => (2..2)).map(&:action_type), ["create", "create"]
+    assert_equal Traka::Change.changes(:version => (2..2)).count, 2
+    assert_equal Traka::Change.changes(:version => (2..2)).map(&:klass), ["Product", "Cheese"]
+    assert_equal Traka::Change.changes(:version => (2..2)).map(&:action_type), ["create", "create"]
   end
 
   test "TrakaChange can list differing changes" do
@@ -74,9 +74,9 @@ class TrakaChangeTest < ActiveSupport::TestCase
     p.save
     c.destroy
 
-    assert_equal Traka::Change.staged_changes.count, 2
-    assert_equal Traka::Change.staged_changes.map(&:klass), ["Product", "Cheese"]
-    assert_equal Traka::Change.staged_changes.map(&:action_type), ["update", "destroy"]
+    assert_equal Traka::Change.changes.count, 2
+    assert_equal Traka::Change.changes.map(&:klass), ["Product", "Cheese"]
+    assert_equal Traka::Change.changes.map(&:action_type), ["update", "destroy"]
   end
 
   test "TrakaChange can filter out obsolete create->destroy actions" do
@@ -85,9 +85,9 @@ class TrakaChangeTest < ActiveSupport::TestCase
 
     p.destroy
 
-    assert_equal Traka::Change.staged_changes.count, 1
-    assert_equal Traka::Change.staged_changes.map(&:klass), ["Cheese"]
-    assert_equal Traka::Change.staged_changes.map(&:action_type), ["create"]
+    assert_equal Traka::Change.changes.count, 1
+    assert_equal Traka::Change.changes.map(&:klass), ["Cheese"]
+    assert_equal Traka::Change.changes.map(&:action_type), ["create"]
   end
 
   test "TrakaChange can filter out obsolete update->destroy actions" do
@@ -103,9 +103,9 @@ class TrakaChangeTest < ActiveSupport::TestCase
 
     p.destroy
 
-    assert_equal Traka::Change.staged_changes.count, 1
-    assert_equal Traka::Change.staged_changes.map(&:klass), ["Cheese"]
-    assert_equal Traka::Change.staged_changes.map(&:action_type), ["update"]
+    assert_equal Traka::Change.changes.count, 1
+    assert_equal Traka::Change.changes.map(&:klass), ["Cheese"]
+    assert_equal Traka::Change.changes.map(&:action_type), ["update"]
   end
 
   test "TrakaChange can filter out obsolete create->update actions" do
@@ -118,9 +118,9 @@ class TrakaChangeTest < ActiveSupport::TestCase
     p.name = "Another name"
     p.save
 
-    assert_equal Traka::Change.staged_changes.count, 2
-    assert_equal Traka::Change.staged_changes.map(&:klass), ["Product", "Cheese"]
-    assert_equal Traka::Change.staged_changes.map(&:action_type), ["create", "create"]
+    assert_equal Traka::Change.changes.count, 2
+    assert_equal Traka::Change.changes.map(&:klass), ["Product", "Cheese"]
+    assert_equal Traka::Change.changes.map(&:action_type), ["create", "create"]
   end
 
   test "TrakaChange can filter out obsolete update->update actions" do
@@ -141,9 +141,9 @@ class TrakaChangeTest < ActiveSupport::TestCase
     c.name = "New name"
     c.save
 
-    assert_equal Traka::Change.staged_changes.count, 2
-    assert_equal Traka::Change.staged_changes.map(&:klass), ["Product", "Cheese"]
-    assert_equal Traka::Change.staged_changes.map(&:action_type), ["update", "update"]
+    assert_equal Traka::Change.changes.count, 2
+    assert_equal Traka::Change.changes.map(&:klass), ["Product", "Cheese"]
+    assert_equal Traka::Change.changes.map(&:action_type), ["update", "update"]
   end
 
   test "TrakaChange can give unabridged list of changes" do
@@ -160,9 +160,9 @@ class TrakaChangeTest < ActiveSupport::TestCase
     c.destroy
 
     # Abridged version would be empty because destroys would cancel out creates and updates.
-    assert_equal Traka::Change.staged_changes(:filter => false).count, 6
-    assert_equal Traka::Change.staged_changes(:filter => false).map(&:klass), ["Product", "Cheese", "Product", "Product", "Product", "Cheese"]
-    assert_equal Traka::Change.staged_changes(:filter => false).map(&:action_type), ["create", "create", "update", "update", "destroy", "destroy"]
+    assert_equal Traka::Change.changes(:filter => false).count, 6
+    assert_equal Traka::Change.changes(:filter => false).map(&:klass), ["Product", "Cheese", "Product", "Product", "Product", "Cheese"]
+    assert_equal Traka::Change.changes(:filter => false).map(&:action_type), ["create", "create", "update", "update", "destroy", "destroy"]
   end
 
   test "TrakaChange can give changes for sub-set of resources" do
@@ -175,9 +175,9 @@ class TrakaChangeTest < ActiveSupport::TestCase
     c.name = "Another name"
     c.save
 
-    assert_equal Traka::Change.staged_changes(:only => [Product], :filter => false).count, 2
-    assert_equal Traka::Change.staged_changes(:only => [Product], :filter => false).map(&:klass), ["Product", "Product"]
-    assert_equal Traka::Change.staged_changes(:only => [Product], :filter => false).map(&:action_type), ["create", "update"]
+    assert_equal Traka::Change.changes(:only => [Product], :filter => false).count, 2
+    assert_equal Traka::Change.changes(:only => [Product], :filter => false).map(&:klass), ["Product", "Product"]
+    assert_equal Traka::Change.changes(:only => [Product], :filter => false).map(&:action_type), ["create", "update"]
   end
 
   test "TrakaChange can give changes for sub-set of actions" do
@@ -190,9 +190,9 @@ class TrakaChangeTest < ActiveSupport::TestCase
     p.name = "Another name"
     p.save
 
-    assert_equal Traka::Change.staged_changes(:actions => [:create]).count, 2
-    assert_equal Traka::Change.staged_changes(:actions => [:create]).map(&:klass), ["Product", "Cheese"]
-    assert_equal Traka::Change.staged_changes(:actions => [:create]).map(&:action_type), ["create", "create"]
+    assert_equal Traka::Change.changes(:actions => [:create]).count, 2
+    assert_equal Traka::Change.changes(:actions => [:create]).map(&:klass), ["Product", "Cheese"]
+    assert_equal Traka::Change.changes(:actions => [:create]).map(&:action_type), ["create", "create"]
   end
 
   test "TrakaChange can accept multiple options" do
@@ -208,21 +208,21 @@ class TrakaChangeTest < ActiveSupport::TestCase
     p.destroy
     c.destroy
 
-    assert_equal Traka::Change.staged_changes(:actions => [:create], :filter => false, :only => [Product, Cheese]).count, 2
-    assert_equal Traka::Change.staged_changes(:actions => [:create], :filter => false, :only => [Product, Cheese]).map(&:klass), ["Product", "Cheese"]
-    assert_equal Traka::Change.staged_changes(:actions => [:create], :filter => false, :only => [Product, Cheese]).map(&:action_type), ["create", "create"]
+    assert_equal Traka::Change.changes(:actions => [:create], :filter => false, :only => [Product, Cheese]).count, 2
+    assert_equal Traka::Change.changes(:actions => [:create], :filter => false, :only => [Product, Cheese]).map(&:klass), ["Product", "Cheese"]
+    assert_equal Traka::Change.changes(:actions => [:create], :filter => false, :only => [Product, Cheese]).map(&:action_type), ["create", "create"]
 
-    assert_equal Traka::Change.staged_changes(:actions => [:create, :update], :filter => false).count, 4
-    assert_equal Traka::Change.staged_changes(:actions => [:create, :update], :filter => false, :only => [Product, Cheese]).map(&:klass), ["Product", "Cheese", "Product", "Product"]
-    assert_equal Traka::Change.staged_changes(:actions => [:create, :update], :filter => false, :only => [Product, Cheese]).map(&:action_type), ["create", "create", "update", "update"]
+    assert_equal Traka::Change.changes(:actions => [:create, :update], :filter => false).count, 4
+    assert_equal Traka::Change.changes(:actions => [:create, :update], :filter => false, :only => [Product, Cheese]).map(&:klass), ["Product", "Cheese", "Product", "Product"]
+    assert_equal Traka::Change.changes(:actions => [:create, :update], :filter => false, :only => [Product, Cheese]).map(&:action_type), ["create", "create", "update", "update"]
   end
 
   test "TrakaChange can resolve AR objects" do
     p = Product.create(:name => "Product A")
     c = Cheese.create(:name => "Cheese A")
 
-    assert_equal Traka::Change.staged_changes.first.get_record, p
-    assert_equal Traka::Change.staged_changes.last.get_record, c
+    assert_equal Traka::Change.changes.first.get_record, p
+    assert_equal Traka::Change.changes.last.get_record, c
   end
 
 end 
