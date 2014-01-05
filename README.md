@@ -56,7 +56,7 @@ Each Traka::Change record can be resolved to the original record (except "destro
 
 ```ruby 
   c = Traka::Change.changes.first #=> <Traka::Change>
-  c.get_record                           #=> <ActiveRecordObject>
+  c.get_record                    #=> <ActiveRecordObject>
 ```
 
 To fetch a changeset across multiple versions. Assuming current version is 5, to get changes from v2 onwards:
