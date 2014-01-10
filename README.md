@@ -102,15 +102,15 @@ Obviously, all options above can be mixed and matched in logical ways.
 To see the current version:
 
 ```ruby 
-  Traka::Change.latest_version
+  Traka::Change.latest_version       #=> 0
 ```
 
 To publish a new version:
 
 ```ruby 
-  Traka::Change.latest_version       #=> 1
+  Traka::Change.latest_version       #=> 0
   Traka::Change.publish_new_version!
-  Traka::Change.latest_version       #=> 2
+  Traka::Change.latest_version       #=> 1
 ```
 
 ## Example
@@ -122,7 +122,7 @@ Assuming models called Product and Car exist.
   b = Product.create(:name => "Product 2")
   c = Car.create(:name => "Car 1")
 
-  Traka::Change.latest_version #=> 1
+  Traka::Change.latest_version #=> 0
   Traka::Change.changes #=> [<Traka::Change><create>, <Traka::Change><create>, <Traka::Change><create>]
 
   b.name = "New name"
@@ -133,7 +133,7 @@ Assuming models called Product and Car exist.
 
   Traka::Change.publish_new_version!
 
-  Traka::Change.latest_version #=> 2
+  Traka::Change.latest_version #=> 1
 
   b.destroy
   a.name = "New name"
