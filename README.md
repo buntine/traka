@@ -12,6 +12,8 @@ Traka is useful in conjunction with APIs that need to be able to have simple ver
 API needs to send out a succinct changeset when a new version of the data is published. This way your API can send just the data
 that has been created/updated/destroyed instead of sending out everything every time.
 
+Versioning starts at 0.
+
 ## Install
 
 Add it to your Gemfile:
@@ -46,7 +48,7 @@ Each model should have a string "uuid" column. If you want to use a different co
 
 ## Use
 
-To access the current set of staged changes:
+To access the current set of staged (AKA unpublished) changes:
 
 ```ruby 
   Traka::Change.changes #=> [<Traka::Change>, ...]
@@ -65,12 +67,14 @@ To fetch a changeset across multiple versions. Assuming current version is 5, to
   Traka::Change.changes(:version => 2) #=> [<Traka::Change>, ...]
 ```
 
-Or just get changes from v2 to v4:
+NOTE: If you specify a :version option, you will receive only published changes. If omitted, you will only receive unpublished/staged changes.
+
+If you just want to get changes from v2 to v4:
 
 ```ruby 
   Traka::Change.changes(:version => (2..4)) #=> [<Traka::Change>, ...]
 
-  # Or maybe you just want v2 and v4:
+  # Or maybe you just want v2 and v4 (omitting v1, v3 and v5):
   Traka::Change.changes(:version => [2, 4]) #=> [<Traka::Change>, ...]
 ```
 
