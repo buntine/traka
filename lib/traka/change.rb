@@ -31,10 +31,18 @@ module Traka
       end
 
       def changes(opts={})
-        opts = {:version => latest_version + 1,
+        opts = {:version => nil,
                 :filter => true,
                 :actions => [],
                 :only => []}.merge(opts)
+
+        # If version is specified, return only published changes from v onwards.
+        # Otherwise, return only unstaged changes.
+        unless opts[:version].is_a?(Range)
+          opts[:version] = opts[:version]    ?
+            (opts[:version]..latest_version) :
+            latest_version + 1
+        end
 
         c = where(["version #{opts[:version].is_a?(Range) ? "in" : ">="} (?)", opts[:version]])
 
@@ -49,7 +57,7 @@ module Traka
         if opts[:filter]
           filter_changes(c)
         else
-          c
+          c.all
         end
       end
 

@@ -4,7 +4,7 @@ class IsTrakableTest < Test::Unit::TestCase
 
   def setup
     Traka::Change.destroy_all
-    Traka::Change.set_version!(1)
+    Traka::Change.set_version!(0)
   end
  
   def test_a_products_traka_uuid_should_be_uuid

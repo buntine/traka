@@ -4,24 +4,29 @@ class TrakaChangeTest < ActiveSupport::TestCase
 
   def setup
     Traka::Change.destroy_all
-    Traka::Change.set_version!(1)
+    Traka::Change.set_version!(0)
   end
 
   test "TrakaChange has latest version" do
-    assert_equal Traka::Change.latest_version, 1
+    assert_equal Traka::Change.latest_version, 0
   end
 
   test "TrakaChange can publish new version" do
-    assert_equal Traka::Change.latest_version, 1
+    assert_equal Traka::Change.latest_version, 0
 
     Traka::Change.publish_new_version!
 
-    assert_equal Traka::Change.latest_version, 2
+    assert_equal Traka::Change.latest_version, 1
   end
 
   test "TrakaChange can list staged changes" do
     p = Product.create(:name => "Product A")
     c = Cheese.create(:name => "Cheese A")
+
+    Traka::Change.publish_new_version!
+
+    p2 = Product.create(:name => "Product B")
+    c2 = Cheese.create(:name => "Cheese B")
 
     assert_equal Traka::Change.changes.count, 2
     assert_equal Traka::Change.changes.first.klass, "Product"
@@ -38,10 +43,14 @@ class TrakaChangeTest < ActiveSupport::TestCase
 
     p2 = Product.create(:name => "Product B")
 
+    Traka::Change.publish_new_version!
+
+    p3 = Product.create(:name => "Product C")
+
     assert_equal Traka::Change.changes.count, 1
     assert_equal Traka::Change.changes.first.klass, "Product"
 
-    assert_equal Traka::Change.changes(:version => 1).count, 3
+    assert_equal Traka::Change.changes(:version => 1).count, 3 ## Product C is not returned because it hasn't been published.
     assert_equal Traka::Change.changes(:version => 1).map(&:klass), ["Product", "Cheese", "Product"]
     assert_equal Traka::Change.changes(:version => 1).map(&:action_type), ["create", "create", "create"]
   end
@@ -59,9 +68,9 @@ class TrakaChangeTest < ActiveSupport::TestCase
     assert_equal Traka::Change.changes.count, 1
     assert_equal Traka::Change.changes.first.klass, "Product"
 
-    assert_equal Traka::Change.changes(:version => (2..2)).count, 2
-    assert_equal Traka::Change.changes(:version => (2..2)).map(&:klass), ["Product", "Cheese"]
-    assert_equal Traka::Change.changes(:version => (2..2)).map(&:action_type), ["create", "create"]
+    assert_equal Traka::Change.changes(:version => (1..1)).count, 2
+    assert_equal Traka::Change.changes(:version => (1..1)).map(&:klass), ["Product", "Cheese"]
+    assert_equal Traka::Change.changes(:version => (1..1)).map(&:action_type), ["create", "create"]
   end
 
   test "TrakaChange can list differing changes" do
