@@ -69,6 +69,9 @@ Or just get changes from v2 to v4:
 
 ```ruby 
   Traka::Change.changes(:version => (2..4)) #=> [<Traka::Change>, ...]
+
+  # Or maybe you just want v2 and v4:
+  Traka::Change.changes(:version => [2, 4]) #=> [<Traka::Change>, ...]
 ```
 
 The above methods will automatically cleanse obsolete changes. To see everything:

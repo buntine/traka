@@ -61,7 +61,6 @@ module Traka
           "api", "version.txt")
       end
 
-
       # Filters out obsolete changes in the given set. For example,
       # there is no point giving out 4 "update" changes, just one will
       # suffice. And if you "create" and then "destroy" a record in one
