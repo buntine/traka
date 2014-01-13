@@ -36,6 +36,8 @@ module Traka
                 :actions => [],
                 :only => []}.merge(opts)
 
+        return [] if invalid_version?(opts[:version])
+
         # If version is specified, return only published changes from v onwards.
         # Otherwise, return only unstaged changes.
         unless opts[:version].is_a?(Range)
@@ -62,6 +64,12 @@ module Traka
       end
 
       private
+
+      def invalid_version?(v)
+        (v.is_a?(Fixnum) and v > latest_version)      or
+        (v.is_a?(Range) and v.begin > latest_version) or
+        (v.is_a?(Range) and v.begin > v.end)
+      end
 
       def version_path
         File.join(

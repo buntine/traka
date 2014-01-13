@@ -226,6 +226,27 @@ class TrakaChangeTest < ActiveSupport::TestCase
     assert_equal Traka::Change.changes(:actions => [:create, :update], :filter => false, :only => [Product, Cheese]).map(&:action_type), ["create", "create", "update", "update"]
   end
 
+  test "TrakaChange can handle invalid version Fixnum" do
+    p = Product.create(:name => "Product A")
+    c = Cheese.create(:name => "Cheese A")
+
+    assert_equal Traka::Change.changes(:version => 4).count, 0
+  end
+
+  test "TrakaChange can handle invalid version Range" do
+    p = Product.create(:name => "Product A")
+    c = Cheese.create(:name => "Cheese A")
+
+    assert_equal Traka::Change.changes(:version => (4..6)).count, 0
+  end
+
+  test "TrakaChange can handle invalid version inverted Range" do
+    p = Product.create(:name => "Product A")
+    c = Cheese.create(:name => "Cheese A")
+
+    assert_equal Traka::Change.changes(:version => (4..0)).count, 0
+  end
+
   test "TrakaChange can resolve AR objects" do
     p = Product.create(:name => "Product A")
     c = Cheese.create(:name => "Cheese A")
