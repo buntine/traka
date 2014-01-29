@@ -226,6 +226,40 @@ class TrakaChangeTest < ActiveSupport::TestCase
     assert_equal Traka::Change.changes(:actions => [:create, :update], :filter => false, :only => [Product, Cheese]).map(&:action_type), ["create", "create", "update", "update"]
   end
 
+  test "TrakaChange can record changes on parent when m2m relationships are added" do
+    c1 = Category.create(:name => "Category A")
+    c2 = Category.create(:name => "Category B")
+    p  = Product.create(:name => "Product A", :categories => [c1])
+
+    assert_equal Traka::Change.changes.count, 3
+
+    Traka::Change.publish_new_version!
+
+    p.categories << c2
+    p.save
+
+    assert_equal Traka::Change.changes.count, 1
+    assert_equal Traka::Change.changes.map(&:klass), ["Product"]
+    assert_equal Traka::Change.changes.map(&:action_type), ["update"]
+  end
+
+  test "TrakaChange can record changes on parent when m2m relationships are removed" do
+    c1 = Category.create(:name => "Category A")
+    c2 = Category.create(:name => "Category B")
+    p  = Product.create(:name => "Product A", :categories => [c1, c2])
+
+    assert_equal Traka::Change.changes.count, 3
+
+    Traka::Change.publish_new_version!
+
+    p.categories = [c1]
+    p.save
+
+    assert_equal Traka::Change.changes.count, 1
+    assert_equal Traka::Change.changes.map(&:klass), ["Product"]
+    assert_equal Traka::Change.changes.map(&:action_type), ["update"]
+  end
+
   test "TrakaChange can handle invalid version Fixnum" do
     p = Product.create(:name => "Product A")
     c = Cheese.create(:name => "Cheese A")
